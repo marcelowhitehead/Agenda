@@ -21,7 +21,7 @@ class ListaAlunosActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_lista_alunos)
-        val dao = AlunoDAO
+
         dao.salva(Aluno("Marcelo", "1122223333", "marcelo@gmail.com"))
         dao.salva(Aluno("Flavia", "1144445555", "flavia@gmail.com "))
 
@@ -30,8 +30,6 @@ class ListaAlunosActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-
-
         configuraLista()
     }
 
@@ -51,7 +49,11 @@ class ListaAlunosActivity : AppCompatActivity() {
         val alunos = dao.todos()
         configuraAdapter(listaDeAlunos, alunos)
         configuraItemClickListener(listaDeAlunos, alunos)
-        listaDeAlunos.onItemLongClickListener =  AdapterView.OnItemLongClickListener {parent: AdapterView<*>?, view: View?, position: Int, id: Long ->
+        configuraItemLongClickListener(listaDeAlunos, alunos)
+    }
+
+    private fun configuraItemLongClickListener(listaDeAlunos: ListView, alunos: ArrayList<Aluno>) {
+        listaDeAlunos.onItemLongClickListener = AdapterView.OnItemLongClickListener { parent: AdapterView<*>?, view: View?, position: Int, id: Long ->
             val alunoEscolhido = alunos.get(position)
             dao.remove(alunoEscolhido)
             adapter?.remove(alunoEscolhido)
@@ -74,4 +76,5 @@ class ListaAlunosActivity : AppCompatActivity() {
     private fun configuraAdapter(listaDeAlunos: ListView, alunos: ArrayList<Aluno>) {
         listaDeAlunos.adapter = ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, alunos.map { it.nome })
     }
+
 }
