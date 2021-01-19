@@ -28,4 +28,10 @@ object AlunoDAO {
         return ArrayList(this.alunos)
     }
 
+    fun remove(aluno: Aluno) {
+        alunos.find {it.id == aluno.id}?.let {
+            alunos.remove(it)
+        }
+    }
+
 }

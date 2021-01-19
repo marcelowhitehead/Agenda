@@ -12,8 +12,11 @@ import com.example.agenda.dao.AlunoDAO
 import com.example.agenda.model.Aluno
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 
+
 class ListaAlunosActivity : AppCompatActivity() {
 
+    private val dao = AlunoDAO
+    private var adapter: ArrayAdapter<Aluno>? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -23,6 +26,13 @@ class ListaAlunosActivity : AppCompatActivity() {
         dao.salva(Aluno("Flavia", "1144445555", "flavia@gmail.com "))
 
         configuraNovoAluno()
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+
+        configuraLista()
     }
 
     private fun configuraNovoAluno() {
@@ -36,18 +46,18 @@ class ListaAlunosActivity : AppCompatActivity() {
         })
     }
 
-    override fun onResume() {
-        super.onResume()
-
-        val dao = AlunoDAO
-        configuraLista(dao)
-    }
-
-    private fun configuraLista(dao: AlunoDAO) {
+    private fun configuraLista() {
         val listaDeAlunos = findViewById<ListView>(R.id.activity_lista_alunos_listview)
         val alunos = dao.todos()
         configuraAdapter(listaDeAlunos, alunos)
         configuraItemClickListener(listaDeAlunos, alunos)
+        listaDeAlunos.onItemLongClickListener =  AdapterView.OnItemLongClickListener {parent: AdapterView<*>?, view: View?, position: Int, id: Long ->
+            val alunoEscolhido = alunos.get(position)
+            dao.remove(alunoEscolhido)
+            adapter?.remove(alunoEscolhido)
+            this.configuraLista()
+            true
+        }
     }
 
     private fun configuraItemClickListener(listaDeAlunos: ListView, alunos: ArrayList<Aluno>) {
@@ -60,7 +70,6 @@ class ListaAlunosActivity : AppCompatActivity() {
     private fun abreFormularioModoEditaAluno(alunoEscolhido: Aluno) {
         startActivity(Intent(this, FormularioAlunoActivity::class.java).putExtra(ConstantesActivities.CHAVE_ALUNO, alunoEscolhido))
     }
-
 
     private fun configuraAdapter(listaDeAlunos: ListView, alunos: ArrayList<Aluno>) {
         listaDeAlunos.adapter = ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, alunos.map { it.nome })
