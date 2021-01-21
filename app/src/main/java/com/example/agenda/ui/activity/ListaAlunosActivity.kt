@@ -2,9 +2,11 @@ package com.example.agenda.ui.activity
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
+import android.view.ContextMenu
+import android.view.MenuItem
 import android.view.View
 import android.widget.AdapterView
+import android.widget.AdapterView.AdapterContextMenuInfo
 import android.widget.ArrayAdapter
 import android.widget.ListView
 import androidx.appcompat.app.AppCompatActivity
@@ -32,6 +34,26 @@ class ListaAlunosActivity : AppCompatActivity() {
         configuraNovoAluno()
     }
 
+    override fun onCreateContextMenu(menu: ContextMenu?, v: View?, menuInfo: ContextMenu.ContextMenuInfo?) {
+        super.onCreateContextMenu(menu, v, menuInfo)
+        menuInflater.inflate(R.menu.activity_lista_alunos_menu, menu)
+    }
+
+    override fun onContextItemSelected(item: MenuItem): Boolean {
+
+        val itemId = item.itemId
+        if (itemId == R.id.activity_lista_alunos_menu_remover) {
+            val menuInfo = item.menuInfo as AdapterContextMenuInfo
+            val alunoEscolhido = adapter?.getItem(menuInfo.position)
+            alunoEscolhido?.let {
+                dao.remove(it)
+                adapter?.remove(alunoEscolhido)
+            }
+        }
+
+        return super.onContextItemSelected(item)
+    }
+
     override fun onResume() {
         super.onResume()
 
@@ -57,17 +79,7 @@ class ListaAlunosActivity : AppCompatActivity() {
         val alunos = dao.todos()
         configuraAdapter(alunos)
         configuraItemClickListener(alunos)
-        configuraItemLongClickListener(alunos)
-    }
-
-    private fun configuraItemLongClickListener(alunos: ArrayList<Aluno>) {
-        listaDeAlunos?.onItemLongClickListener = AdapterView.OnItemLongClickListener { parent: AdapterView<*>?, view: View?, position: Int, id: Long ->
-            val alunoEscolhido = alunos.get(position)
-            dao.remove(alunoEscolhido)
-            adapter?.remove(alunoEscolhido)
-            adapter?.notifyDataSetChanged()
-            true
-        }
+        registerForContextMenu(listaDeAlunos)
     }
 
     private fun configuraItemClickListener(alunos: ArrayList<Aluno>) {
