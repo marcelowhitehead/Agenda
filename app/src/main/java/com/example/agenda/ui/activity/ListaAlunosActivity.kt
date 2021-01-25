@@ -27,6 +27,7 @@ class ListaAlunosActivity : AppCompatActivity() {
         setContentView(R.layout.activity_lista_alunos)
         listaDeAlunos = findViewById<ListView>(R.id.activity_lista_alunos_listview)
 
+
         dao.salva(Aluno("Marcelo", "1122223333", "marcelo@gmail.com"))
         dao.salva(Aluno("Flavia", "1144445555", "flavia@gmail.com "))
 
@@ -40,7 +41,6 @@ class ListaAlunosActivity : AppCompatActivity() {
     }
 
     override fun onContextItemSelected(item: MenuItem): Boolean {
-
         val itemId = item.itemId
         if (itemId == R.id.activity_lista_alunos_menu_remover) {
             val menuInfo = item.menuInfo as AdapterContextMenuInfo

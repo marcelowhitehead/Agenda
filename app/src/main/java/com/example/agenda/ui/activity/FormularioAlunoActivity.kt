@@ -1,6 +1,8 @@
 package com.example.agenda.ui.activity
 
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
@@ -24,8 +26,20 @@ class FormularioAlunoActivity : AppCompatActivity() {
         setContentView(R.layout.activity_formulario_aluno)
 
         inicializacaoDosCampos()
-        configuraBotaoSalvar()
         carregaAluno()
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.activity_formulario_aluno_menu, menu)
+        return super.onCreateOptionsMenu(menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        val itemId = item.itemId
+        if (itemId == R.id.activity_formulario_aluno_menu_salvar){
+            finalizaFormulario()
+        }
+        return super.onOptionsItemSelected(item)
     }
 
     private fun carregaAluno() {
@@ -34,7 +48,6 @@ class FormularioAlunoActivity : AppCompatActivity() {
             aluno = dados.getSerializableExtra(CHAVE_ALUNO) as Aluno
             preencheCampos()
             findViewById<TextView>(R.id.activity_formulario_aluno_title).setText(com.example.agenda.R.string.editar_aluno)
-            findViewById<Button>(R.id.activity_formulario_aluno_botao_salvar).setText(R.string.salvar)
         }
     }
 
@@ -50,13 +63,6 @@ class FormularioAlunoActivity : AppCompatActivity() {
         campoEmail = findViewById(R.id.activity_formulario_aluno_email)
     }
 
-
-    private fun configuraBotaoSalvar() {
-        val botaoSalvar = findViewById<Button>(R.id.activity_formulario_aluno_botao_salvar)
-        botaoSalvar.setOnClickListener(View.OnClickListener {
-            finalizaFormulario()
-        })
-    }
 
     private fun finalizaFormulario() {
         preencheAluno()
