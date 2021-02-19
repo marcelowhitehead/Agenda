@@ -2,17 +2,19 @@ package com.example.agenda.ui.activity
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.ContextMenu
 import android.view.MenuItem
 import android.view.View
 import android.widget.AdapterView
 import android.widget.AdapterView.AdapterContextMenuInfo
-import android.widget.ArrayAdapter
+import android.widget.BaseAdapter
 import android.widget.ListView
 import androidx.appcompat.app.AppCompatActivity
 import com.example.agenda.R
 import com.example.agenda.dao.AlunoDAO
 import com.example.agenda.model.Aluno
+import com.example.agenda.ui.adapter.ListaAlunosAdapter
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 
@@ -20,7 +22,7 @@ class ListaAlunosActivity : AppCompatActivity() {
 
     private var listaDeAlunos: ListView? = null
     private val dao = AlunoDAO
-    private var adapter: ArrayAdapter<Aluno>? = null
+    private val alunosAdapter: ListaAlunosAdapter by lazy { ListaAlunosAdapter(this) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,10 +46,10 @@ class ListaAlunosActivity : AppCompatActivity() {
         val itemId = item.itemId
         if (itemId == R.id.activity_lista_alunos_menu_remover) {
             val menuInfo = item.menuInfo as AdapterContextMenuInfo
-            val alunoEscolhido = adapter?.getItem(menuInfo.position)
-            alunoEscolhido?.let {
+            val alunoEscolhido = alunosAdapter.getItem(menuInfo.position)
+            alunoEscolhido.let {
                 dao.remove(it)
-                adapter?.remove(alunoEscolhido)
+                alunosAdapter.remove(alunoEscolhido)
             }
         }
 
@@ -57,9 +59,11 @@ class ListaAlunosActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
 
-        adapter?.run {
+        alunosAdapter.run {
+            val alunos : ArrayList<Aluno> = dao.todos()
             clear()
-            addAll(dao.todos())
+            addAll(alunos)
+            configuraItemClickListener(alunos)
         }
 
     }
@@ -77,7 +81,7 @@ class ListaAlunosActivity : AppCompatActivity() {
 
     private fun configuraLista() {
         val alunos = dao.todos()
-        configuraAdapter(alunos)
+        configuraAdapter()
         configuraItemClickListener(alunos)
         registerForContextMenu(listaDeAlunos)
     }
@@ -93,9 +97,10 @@ class ListaAlunosActivity : AppCompatActivity() {
         startActivity(Intent(this, FormularioAlunoActivity::class.java).putExtra(ConstantesActivities.CHAVE_ALUNO, alunoEscolhido))
     }
 
-    private fun configuraAdapter(alunos: ArrayList<Aluno>) {
-        adapter = ArrayAdapter<Aluno>(this, android.R.layout.simple_list_item_1, alunos)
-        listaDeAlunos?.adapter = this.adapter
+    private fun configuraAdapter() {
+        listaDeAlunos?.adapter = alunosAdapter
     }
-
 }
+
+
+

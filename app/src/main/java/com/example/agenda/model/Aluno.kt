@@ -13,7 +13,7 @@ class Aluno(internal var nome: String,
 
 
     override fun toString(): String {
-        return nome
+        return nome + " - " + telefone
      }
 
     fun temIdValido(): Boolean {
