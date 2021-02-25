@@ -1,14 +1,15 @@
 package com.example.agenda.ui.activity
 
+import android.app.AlertDialog
+import android.app.Dialog
+import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.ContextMenu
 import android.view.MenuItem
 import android.view.View
 import android.widget.AdapterView
 import android.widget.AdapterView.AdapterContextMenuInfo
-import android.widget.BaseAdapter
 import android.widget.ListView
 import androidx.appcompat.app.AppCompatActivity
 import com.example.agenda.R
@@ -28,11 +29,6 @@ class ListaAlunosActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_lista_alunos)
         listaDeAlunos = findViewById<ListView>(R.id.activity_lista_alunos_listview)
-
-
-        dao.salva(Aluno("Marcelo", "1122223333", "marcelo@gmail.com"))
-        dao.salva(Aluno("Flavia", "1144445555", "flavia@gmail.com "))
-
         configuraLista()
         configuraNovoAluno()
     }
@@ -45,24 +41,34 @@ class ListaAlunosActivity : AppCompatActivity() {
     override fun onContextItemSelected(item: MenuItem): Boolean {
         val itemId = item.itemId
         if (itemId == R.id.activity_lista_alunos_menu_remover) {
-            val menuInfo = item.menuInfo as AdapterContextMenuInfo
-            val alunoEscolhido = alunosAdapter.getItem(menuInfo.position)
-            alunoEscolhido.let {
-                dao.remove(it)
-                alunosAdapter.remove(alunoEscolhido)
-            }
+            confirmaRemocao(item)
         }
 
         return super.onContextItemSelected(item)
+    }
+
+    private fun confirmaRemocao(item: MenuItem) {
+        AlertDialog.Builder(this)
+                .setTitle("Removendo aluno")
+                .setMessage("Tem certeza que deseja remover o aluno?")
+                .setPositiveButton("Sim", DialogInterface.OnClickListener { dialog, which ->
+                    val menuInfo = item.menuInfo as AdapterContextMenuInfo
+                    val alunoEscolhido = alunosAdapter.getItem(menuInfo.position)
+                    alunoEscolhido.let {
+                        dao.remove(it)
+                        alunosAdapter.remove(alunoEscolhido)
+                    }
+                })
+                .setNegativeButton("Não", null)
+                .show()
     }
 
     override fun onResume() {
         super.onResume()
 
         alunosAdapter.run {
-            val alunos : ArrayList<Aluno> = dao.todos()
-            clear()
-            addAll(alunos)
+            val alunos: ArrayList<Aluno> = dao.todos()
+            alunosAdapter.atualiza(dao.todos())
             configuraItemClickListener(alunos)
         }
 
@@ -101,6 +107,3 @@ class ListaAlunosActivity : AppCompatActivity() {
         listaDeAlunos?.adapter = alunosAdapter
     }
 }
-
-
-

@@ -61,7 +61,6 @@ class FormularioAlunoActivity : AppCompatActivity() {
         campoEmail = findViewById(R.id.activity_formulario_aluno_email)
     }
 
-
     private fun finalizaFormulario() {
         preencheAluno()
         if (aluno.temIdValido()) {
@@ -72,7 +71,6 @@ class FormularioAlunoActivity : AppCompatActivity() {
         finish()
     }
 
-
     private fun preencheAluno() {
         val nome = campoNome.text.toString()
         val telefone = campoTelefone.text.toString()
@@ -82,6 +80,4 @@ class FormularioAlunoActivity : AppCompatActivity() {
         aluno.telefone = telefone
         aluno.email = email
     }
-
-
 }
