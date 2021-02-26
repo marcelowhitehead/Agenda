@@ -1,7 +1,6 @@
 package com.example.agenda.ui.adapter
 
 import android.content.Context
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,7 +9,7 @@ import android.widget.TextView
 import com.example.agenda.R
 import com.example.agenda.model.Aluno
 
-public class ListaAlunosAdapter(private val context: Context) : BaseAdapter() {
+class ListaAlunosAdapter(private val context: Context) : BaseAdapter() {
 
     private val alunos: MutableList<Aluno> = arrayListOf()
 
@@ -50,7 +49,7 @@ public class ListaAlunosAdapter(private val context: Context) : BaseAdapter() {
         notifyDataSetChanged()
     }
 
-    public fun atualiza(alunos : List<Aluno>){
+    fun atualiza(alunos : List<Aluno>){
             this.alunos.clear()
             this.alunos.addAll(alunos)
         notifyDataSetChanged()

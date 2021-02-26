@@ -3,4 +3,8 @@
     <string name="salvar">Salvar</string>
     <string name="cadastrar">Cadastrar</string>
     <string name="editar_aluno">Editar</string>
+    <string name="nome">Nome</string>
+    <string name="telefone">Telefone</string>
+    <string name="email">Email</string>
+    <string name="remover">Remover</string>
 </resources>

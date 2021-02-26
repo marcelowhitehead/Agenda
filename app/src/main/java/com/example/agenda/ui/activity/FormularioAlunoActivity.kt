@@ -56,8 +56,8 @@ class FormularioAlunoActivity : AppCompatActivity() {
     }
 
     private fun inicializacaoDosCampos() {
-        campoNome = findViewById<EditText>(R.id.activity_formulario_aluno_nome)
-        campoTelefone = findViewById<EditText>(R.id.activity_formulario_aluno_telefone)
+        campoNome = findViewById(R.id.activity_formulario_aluno_nome)
+        campoTelefone = findViewById(R.id.activity_formulario_aluno_telefone)
         campoEmail = findViewById(R.id.activity_formulario_aluno_email)
     }
 
